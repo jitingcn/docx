@@ -28,10 +28,11 @@ module Docx
       @replace = {}
 
       # if path-or_io is string && does not contain a null byte
-      if (path_or_io.instance_of?(String) && !/\u0000/.match?(path_or_io))
+      if (path_or_io.instance_of?(String) && !(/\u0000/ =~ path_or_io))
         raise Errno::EIO.new('Invalid file format') if !File.extname(path_or_io).eql?('.docx')
         @zip = Zip::File.open(path_or_io)
       else
+        path_or_io.set_encoding(Encoding::BINARY) if path_or_io.respond_to?(:set_encoding)
         @zip = Zip::File.open_buffer(path_or_io)
       end
 
@@ -86,7 +87,7 @@ module Docx
     # Some documents have this set, others don't.
     # Values are returned as half-points, so to get points, that's why it's divided by 2.
     def font_size
-      size_value = @styles&.at_xpath('//w:docDefaults//w:rPrDefault//w:rPr//w:sz/@w:val')&.value
+      size_value = @styles.try(:at_xpath, '//w:docDefaults//w:rPrDefault//w:rPr//w:sz/@w:val').try(:value)
 
       return nil unless size_value
 
@@ -160,8 +161,8 @@ module Docx
           end
         end
       end
-
       stream.rewind
+      stream.set_encoding(Encoding::BINARY) if stream.respond_to?(:set_encoding)
       stream
     end
 

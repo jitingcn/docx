@@ -17,11 +17,11 @@ module Docx
         def styles
           styles_parent_node
             .children
-            .filter_map do |style|
+            .map do |style|
               next unless style.get_attribute("w:styleId")
 
               Elements::Style.new(self, style)
-            end
+            end.compact
         end
 
         def style_of(id_or_name)

@@ -5,3 +5,5 @@ pkg/*
 doc/
 vendor/
 coverage/
+.tool-versions
+.ruby-version

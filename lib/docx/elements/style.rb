@@ -11,12 +11,12 @@ module Docx
       class Attribute
         attr_reader :name, :selectors, :required, :converter, :validator
 
-        def initialize(name, selectors, required: false, converter:, validator:)
+        def initialize(name, selectors, options = {})
           @name = name
           @selectors = selectors
-          @required = required
-          @converter = converter || Converters::DefaultValueConverter
-          @validator = validator || Validators::DefaultValidator
+          @required = options[:required] || false
+          @converter = options[:converter] || Converters::DefaultValueConverter
+          @validator = options[:validator] || Validators::DefaultValidator
         end
 
         def required?
@@ -26,7 +26,8 @@ module Docx
         def retrieve_from(style)
           selectors
             .lazy
-            .filter_map { |node_xpath| style.node.at_xpath(node_xpath)&.value }
+            .map { |node_xpath| style.node.at_xpath(node_xpath).try(:value) }
+            .to_a.compact
             .map { |value| converter.decode(value) }
             .first
         end
@@ -162,7 +163,7 @@ module Docx
         self.class.required_attributes.all? do |a|
           attribute_value = a.retrieve_from(self)
 
-          a.validator&.validate(attribute_value)
+          a.validator.try(:validate, attribute_value)
         end
       end
 

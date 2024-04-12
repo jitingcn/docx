@@ -113,12 +113,12 @@ module Docx
         private
 
         def style_property
-          properties&.at_xpath('w:pStyle') || properties&.add_child('<w:pStyle/>').first
+          properties.try(:at_xpath, 'w:pStyle') || properties.try(:add_child, '<w:pStyle/>').first
         end
 
         # Returns the alignment if any, or nil if left
         def alignment
-          @node.at_xpath('.//w:jc/@w:val')&.value
+          @node.at_xpath('.//w:jc/@w:val').try(:value)
         end
       end
     end

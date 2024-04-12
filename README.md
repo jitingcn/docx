@@ -1,17 +1,12 @@
 # docx
 
-[![Gem Version](https://badge.fury.io/rb/docx.svg)](https://badge.fury.io/rb/docx)
-[![Ruby](https://github.com/ruby-docx/docx/workflows/Ruby/badge.svg)](https://github.com/ruby-docx/docx/actions?query=workflow%3ARuby)
-[![Coverage Status](https://coveralls.io/repos/github/ruby-docx/docx/badge.svg?branch=master)](https://coveralls.io/github/ruby-docx/docx?branch=master)
-[![Gitter](https://badges.gitter.im/ruby-docx/community.svg)](https://gitter.im/ruby-docx/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-
 A ruby library/gem for interacting with `.docx` files. currently capabilities include reading paragraphs/bookmarks, inserting text at bookmarks, reading tables/rows/columns/cells and saving the document.
 
 ## Usage
 
 ### Prerequisites
 
-- Ruby 2.6 or later
+- Ruby 2.0 or later
 
 ### Install
 
@@ -145,7 +140,7 @@ doc = Docx::Document.open('tables.docx')
 # Iterate over each table
 doc.tables.each do |table|
   last_row = table.rows.last
-  
+
   # Copy last row and insert a new one before last row
   new_row = last_row.copy
   new_row.insert_before(last_row)
